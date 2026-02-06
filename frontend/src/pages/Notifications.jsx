@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
+import API_URL from '../config';
 import Sidebar from '../components/Sidebar';
 import { Heart, MessageCircle, UserPlus, Bell } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
@@ -20,7 +21,7 @@ const Notifications = () => {
   const fetchNotifications = async () => {
     try {
       const token = localStorage.getItem('token');
-      const { data } = await axios.get('http://localhost:5000/api/notifications', {
+      const { data } = await axios.get(`${API_URL}/notifications`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -37,7 +38,7 @@ const Notifications = () => {
     try {
       const token = localStorage.getItem('token');
       await axios.put(
-        'http://localhost:5000/api/notifications/mark-all-read',
+        `${API_URL}/notifications/mark-all-read`,
         {},
         {
           headers: {

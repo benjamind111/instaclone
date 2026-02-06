@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
+import API_URL from '../config';
 import Sidebar from '../components/Sidebar';
 import { Upload, X, Image as ImageIcon } from 'lucide-react';
 
@@ -41,7 +42,7 @@ const CreateStory = () => {
 
       const token = localStorage.getItem('token');
 
-      await axios.post('http://localhost:5000/api/stories/create', formData, {
+      await axios.post(`${API_URL}/stories/create`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${token}`,

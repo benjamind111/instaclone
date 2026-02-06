@@ -1,7 +1,8 @@
 import { useState } from 'react';
+import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import axios from 'axios';
+import API_URL from '../config';
 import { Upload, X, Image as ImageIcon } from 'lucide-react';
 
 const CreatePost = () => {
@@ -43,7 +44,7 @@ const CreatePost = () => {
       const token = localStorage.getItem('token');
 
       const { data } = await axios.post(
-        'http://localhost:5000/api/posts/create',
+        `${API_URL}/posts/create`,
         formData,
         {
           headers: {

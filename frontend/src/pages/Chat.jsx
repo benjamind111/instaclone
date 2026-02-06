@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
+import API_URL from '../config';
 import Sidebar from '../components/Sidebar';
 import { Send, User as UserIcon, Search } from 'lucide-react';
 
@@ -40,7 +41,7 @@ const Chat = () => {
   const fetchConversations = async () => {
     try {
       const token = localStorage.getItem('token');
-      const { data } = await axios.get('http://localhost:5000/api/messages/conversations', {
+      const { data } = await axios.get(`${API_URL}/messages/conversations`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setConversations(data.conversations);
@@ -55,7 +56,7 @@ const Chat = () => {
     try {
       setSearching(true);
       const token = localStorage.getItem('token');
-      const { data } = await axios.get(`http://localhost:5000/api/users/search?q=${searchQuery}`, {
+      const { data } = await axios.get(`${API_URL}/users/search?q=${searchQuery}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setSearchResults(data.users);
@@ -69,7 +70,7 @@ const Chat = () => {
   const fetchMessages = async (userId) => {
     try {
       const token = localStorage.getItem('token');
-      const { data } = await axios.get(`http://localhost:5000/api/messages/${userId}`, {
+      const { data } = await axios.get(`${API_URL}/messages/${userId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setMessages(data.messages);
@@ -89,7 +90,7 @@ const Chat = () => {
       setNewMessage(''); // Clear input immediately (optimistic)
 
       await axios.post(
-        'http://localhost:5000/api/messages/send',
+        `${API_URL}/messages/send`,
         { recipientId: activeChat._id, text },
         { headers: { Authorization: `Bearer ${token}` } }
       );

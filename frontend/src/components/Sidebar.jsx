@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import API_URL from '../config';
 import { Home, Search, PlusSquare, Heart, Bookmark, Compass, User, LogOut, Send } from 'lucide-react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -21,7 +22,7 @@ const Sidebar = () => {
       const token = localStorage.getItem('token');
       if (!token) return;
       
-      const { data } = await axios.get('http://localhost:5000/api/notifications/unread-count', {
+      const { data } = await axios.get(`${API_URL}/notifications/unread-count`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setUnreadCount(data.count);

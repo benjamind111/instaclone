@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { X, Upload, Camera } from 'lucide-react';
 import axios from 'axios';
+import API_URL from '../config';
 
 const EditProfile = ({ user, onClose, onUpdate }) => {
   const [bio, setBio] = useState(user?.bio || '');
@@ -23,7 +24,7 @@ const EditProfile = ({ user, onClose, onUpdate }) => {
     try {
       const token = localStorage.getItem('token');
       const response = await axios.post(
-        'http://localhost:5000/api/posts/upload-image',
+        `${API_URL}/posts/upload-image`,
         formData,
         {
           headers: {
@@ -47,7 +48,7 @@ const EditProfile = ({ user, onClose, onUpdate }) => {
     try {
       const token = localStorage.getItem('token');
       const { data } = await axios.put(
-        'http://localhost:5000/api/users/profile',
+        `${API_URL}/users/profile`,
         { bio, profilePic },
         {
           headers: { Authorization: `Bearer ${token}` },

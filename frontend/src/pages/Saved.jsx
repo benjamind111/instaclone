@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
+import API_URL from '../config';
 import Sidebar from '../components/Sidebar';
 import PostCard from '../components/PostCard';
 import { Bookmark } from 'lucide-react';
@@ -17,7 +18,7 @@ const Saved = () => {
   const fetchSavedPosts = async () => {
     try {
       const token = localStorage.getItem('token');
-      const { data } = await axios.get('http://localhost:5000/api/posts/saved', {
+      const { data } = await axios.get(`${API_URL}/posts/saved`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

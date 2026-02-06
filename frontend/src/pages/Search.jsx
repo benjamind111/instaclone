@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import API_URL from '../config';
 import Sidebar from '../components/Sidebar';
 import { Search as SearchIcon } from 'lucide-react';
 
@@ -28,7 +29,7 @@ const Search = () => {
     try {
       const token = localStorage.getItem('token');
       const { data } = await axios.get(
-        `http://localhost:5000/api/users/search?q=${searchQuery}`,
+        `${API_URL}/users/search?q=${searchQuery}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }

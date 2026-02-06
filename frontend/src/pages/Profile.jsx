@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
+import API_URL from '../config';
 import Sidebar from '../components/Sidebar';
 import EditProfile from '../components/EditProfile';
 import PostCard from '../components/PostCard';
@@ -26,7 +27,7 @@ const Profile = () => {
   const fetchProfile = async () => {
     try {
       const token = localStorage.getItem('token');
-      const { data } = await axios.get(`http://localhost:5000/api/users/${id}`, {
+      const { data } = await axios.get(`${API_URL}/users/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setUser(data.user);
@@ -43,7 +44,7 @@ const Profile = () => {
   const fetchUserPosts = async () => {
     try {
       const token = localStorage.getItem('token');
-      const { data } = await axios.get(`http://localhost:5000/api/posts/user/${id}`, {
+      const { data } = await axios.get(`${API_URL}/posts/user/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setPosts(data.posts);
@@ -69,7 +70,7 @@ const Profile = () => {
     try {
       const token = localStorage.getItem('token');
       const { data } = await axios.post(
-        `http://localhost:5000/api/users/${id}/follow`,
+        `${API_URL}/users/${id}/follow`,
         {},
         {
           headers: { Authorization: `Bearer ${token}` },

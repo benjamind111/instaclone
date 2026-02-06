@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Heart, MessageCircle, Bookmark, MoreHorizontal, Edit2, Trash2 } from 'lucide-react';
+import { Heart, MessageCircle, Send, Bookmark, MoreHorizontal, Edit, Trash2 } from 'lucide-react';
+import API_URL from '../config';
 import { formatDistanceToNow } from 'date-fns';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
@@ -50,7 +51,7 @@ const PostCard = ({ post: initialPost, onDelete, onUnsave, initialSaved = false 
     try {
       const token = localStorage.getItem('token');
       await axios.post(
-        `http://localhost:5000/api/posts/${post._id}/like`,
+        `${API_URL}/posts/${post._id}/like`,
         {},
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -74,7 +75,7 @@ const PostCard = ({ post: initialPost, onDelete, onUnsave, initialSaved = false 
     try {
       const token = localStorage.getItem('token');
       const { data } = await axios.post(
-        `http://localhost:5000/api/posts/${post._id}/comment`,
+        `${API_URL}/posts/${post._id}/comment`,
         { text: commentText },
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -97,7 +98,7 @@ const PostCard = ({ post: initialPost, onDelete, onUnsave, initialSaved = false 
     try {
       const token = localStorage.getItem('token');
       const { data } = await axios.put(
-        `http://localhost:5000/api/posts/${post._id}`,
+        `${API_URL}/posts/${post._id}`,
         { caption: newCaption },
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -116,7 +117,7 @@ const PostCard = ({ post: initialPost, onDelete, onUnsave, initialSaved = false 
     setIsDeleting(true);
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(`http://localhost:5000/api/posts/${post._id}`, {
+      await axios.delete(`${API_URL}/posts/${post._id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -140,7 +141,7 @@ const PostCard = ({ post: initialPost, onDelete, onUnsave, initialSaved = false 
     try {
       const token = localStorage.getItem('token');
       const { data } = await axios.post(
-        `http://localhost:5000/api/posts/${post._id}/save`,
+        `${API_URL}/posts/${post._id}/save`,
         {},
         {
           headers: { Authorization: `Bearer ${token}` },

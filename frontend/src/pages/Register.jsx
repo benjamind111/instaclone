@@ -2,9 +2,11 @@ import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import API_URL from '../config';
 
 const Register = () => {
   const [formData, setFormData] = useState({ username: '', email: '', password: '' });
+  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { login } = useAuth();
@@ -14,8 +16,9 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setError(''); // Clear previous errors
     try {
-      const url = "http://localhost:5000/api/auth/register";
+      const url = `${API_URL}/auth/register`;
       const { data } = await axios.post(url, formData);
       
       login(data.user, data.token);

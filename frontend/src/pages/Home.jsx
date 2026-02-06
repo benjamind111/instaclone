@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
+import API_URL from '../config';
 import Sidebar from '../components/Sidebar';
 import PostCard from '../components/PostCard';
 import StoryViewer from '../components/StoryViewer';
@@ -23,7 +24,7 @@ const Home = () => {
   const fetchPosts = async () => {
     try {
       const token = localStorage.getItem('token');
-      const { data } = await axios.get('http://localhost:5000/api/posts/feed', {
+      const { data } = await axios.get(`${API_URL}/posts/feed`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -39,7 +40,7 @@ const Home = () => {
   const fetchStories = async () => {
     try {
       const token = localStorage.getItem('token');
-      const { data } = await axios.get('http://localhost:5000/api/stories', {
+      const { data } = await axios.get(`${API_URL}/stories`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setStories(data.stories);
