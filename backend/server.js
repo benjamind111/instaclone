@@ -15,7 +15,17 @@ const app = express();
 
 // Middleware
 app.use(express.json());
-app.use(cors());
+// backend/server.js
+
+const corsOptions = {
+  origin: [
+    "http://localhost:5173", // Keep this for local development
+    "https://instaclone-murex.vercel.app/" // 👈 PASTE YOUR VERCEL URL HERE
+  ],
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
 
 // Import Routes
 const authRoutes = require('./routes/auth');
