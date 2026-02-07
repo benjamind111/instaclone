@@ -1,43 +1,7 @@
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
-const dotenv = require('dotenv');
 const cors = require('cors');
-const path = require('path');
-const connectDB = require('./config/db'); // Import the DB connection
-
-// Load environment variables
-dotenv.config({ path: path.join(__dirname, '.env') });
-
-// Connect to MongoDB
-connectDB();
-
-const app = express();
-
-// CORS Configuration (MUST be first, before any other middleware)
-const corsOptions = {
-  origin: [
-    "http://localhost:5173",              // Local development
-    "https://instaclone-murex.vercel.app" // Production (NO trailing slash!)
-  ],
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-};
-
-// Apply CORS middleware FIRST
-app.use(cors(corsOptions));
-
-// Handle preflight requests explicitly
-app.options('*', cors(corsOptions));
-
-// Debug middleware - logs every incoming request origin
-app.use((req, res, next) => {
-  console.log(`📨 Request from origin: ${req.headers.origin || 'No origin header'}`);
-  next();
-});
-
-// Other Middleware
-app.use(express.json());
 
 // Import Routes
 const authRoutes = require('./routes/auth');
@@ -47,7 +11,64 @@ const notificationRoutes = require('./routes/notifications');
 const messageRoutes = require('./routes/messages');
 const storyRoutes = require('./routes/stories');
 
-// API Routes
+const app = express();
+
+// ====================================================================
+// 1. DEBUGGING MIDDLEWARE (Logs the Origin of every request)
+// ====================================================================
+app.use((req, res, next) => {
+  console.log(`[Incoming Request] Method: ${req.method} | Origin: ${req.headers.origin} | URL: ${req.url}`);
+  next();
+});
+
+// ====================================================================
+// 2. CORS CONFIGURATION (CRITICAL: MUST BE BEFORE ROUTES)
+// ====================================================================
+const allowedOrigins = [
+  "https://instaclone-murex.vercel.app", // Your Vercel Frontend (Production)
+  "http://localhost:5173",               // Vite Localhost (Development)
+  "http://localhost:5000"                // Postman/Local Backend testing
+];
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      console.error(`[CORS BLOCKED] Origin: ${origin} not allowed.`);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true, // Allow cookies/headers
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept']
+};
+
+// Apply CORS Middleware
+app.use(cors(corsOptions));
+
+// Handle Preflight Requests explicitly
+app.options(/.*/, cors(corsOptions));
+
+// ====================================================================
+// 3. STANDARD MIDDLEWARE
+// ====================================================================
+app.use(express.json({ limit: '50mb' })); // Increased limit for image uploads
+app.use(express.urlencoded({ extended: true }));
+
+// ====================================================================
+// 4. DATABASE CONNECTION
+// ====================================================================
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => console.log('✅ MongoDB Connected'))
+  .catch((err) => console.error('❌ MongoDB Connection Error:', err));
+
+// ====================================================================
+// 5. ROUTES
+// ====================================================================
 app.use('/api/auth', authRoutes);
 app.use('/api/posts', postRoutes);
 app.use('/api/users', userRoutes);
@@ -55,12 +76,16 @@ app.use('/api/notifications', notificationRoutes);
 app.use('/api/messages', messageRoutes);
 app.use('/api/stories', storyRoutes);
 
-// Test Route
+// Health Check Endpoint (Useful for Render to know app is alive)
 app.get('/', (req, res) => {
-  res.send('🚀 Instagram Clone Server is Running!');
+  res.send('Instagram Clone API is running live 🚀');
 });
 
+// ====================================================================
+// 6. SERVER START
+// ====================================================================
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`✅ Backend running on port ${PORT}`);
+  console.log(`🚀 Server running on port ${PORT}`);
+  console.log(`🛡️  CORS Enabled for: ${allowedOrigins.join(', ')}`);
 });
